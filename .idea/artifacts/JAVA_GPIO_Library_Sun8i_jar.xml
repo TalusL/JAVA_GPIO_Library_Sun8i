@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="JAVA_GPIO_Library_Sun8i:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/JAVA_GPIO_Library_Sun8i_jar</output-path>
+    <root id="archive" name="JAVA_GPIO_Library_Sun8i.jar">
+      <element id="module-output" name="JAVA_GPIO_Library_Sun8i" />
+    </root>
+  </artifact>
+</component>
