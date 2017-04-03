@@ -7,12 +7,12 @@
 
 
 #define SW_PORTC_IO_BASE 0x01c20800
-#define GPIO_BANK(pin)	((pin) >> 5)
-#define GPIO_CFG_INDEX(pin)	(((pin) & 0x1F) >> 3)
-#define GPIO_CFG_OFFSET(pin)	((((pin) & 0x1F) & 0x7) << 2)
-#define GPIO_NUM(pin)	((pin) & 0x1F)
-#define GPIO_PUL_INDEX(pin)	(((pin) & 0x1F )>> 4)
-#define GPIO_PUL_OFFSET(pin)	(((pin) & 0x0F) << 1)
+#define GPIO_BANK(gpioPin)	((gpioPin) >> 5)
+#define GPIO_CFG_INDEX(gpioPin)	(((gpioPin) & 0x1F) >> 3)
+#define GPIO_CFG_OFFSET(gpioPin)	((((gpioPin) & 0x1F) & 0x7) << 2)
+#define GPIO_NUM(gpioPin)	((gpioPin) & 0x1F)
+#define GPIO_PUL_INDEX(gpioPin)	(((gpioPin) & 0x1F )>> 4)
+#define GPIO_PUL_OFFSET(gpioPin)	(((gpioPin) & 0x0F) << 1)
 
 unsigned int SUNXI_IO_BASE = 0;
 
@@ -63,12 +63,12 @@ JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1init(JNIEnv * jniEnv, jobj
     return 0;
 }
 
-JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1setcfg(JNIEnv * jniEnv, jobject job, jint pin, jint p1){
+JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1setcfg(JNIEnv * jniEnv, jobject job, jint gpioPin, jint gpioModel){
 
     unsigned int cfg;
-    unsigned int bank = GPIO_BANK(pin);
-    unsigned int index = GPIO_CFG_INDEX(pin);
-    unsigned int offset = GPIO_CFG_OFFSET(pin);
+    unsigned int bank = GPIO_BANK(gpioPin);
+    unsigned int index = GPIO_CFG_INDEX(gpioPin);
+    unsigned int offset = GPIO_CFG_OFFSET(gpioPin);
 
     if(SUNXI_IO_BASE == 0)
         return -1;
@@ -77,7 +77,7 @@ JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1setcfg(JNIEnv * jniEnv, jo
 
     cfg = *(&pio->cfg[0] + index);
     cfg &= ~(0xf << offset);
-    cfg |= p1 << offset;
+    cfg |= gpioModel << offset;
 
     *(&pio->cfg[0] + index) = cfg;
 
@@ -85,11 +85,11 @@ JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1setcfg(JNIEnv * jniEnv, jo
 
 }
 
-JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1getcfg(JNIEnv * jniEnv, jobject job, jint pin){
+JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1getcfg(JNIEnv * jniEnv, jobject job, jint gpioPin){
     unsigned int cfg;
-    unsigned int bank = GPIO_BANK(pin);
-    unsigned int index = GPIO_CFG_INDEX(pin);
-    unsigned int offset = GPIO_CFG_OFFSET(pin);
+    unsigned int bank = GPIO_BANK(gpioPin);
+    unsigned int index = GPIO_CFG_INDEX(gpioPin);
+    unsigned int offset = GPIO_CFG_OFFSET(gpioPin);
 
     if (SUNXI_IO_BASE == 0)
         return -0;
@@ -100,16 +100,16 @@ JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1getcfg(JNIEnv * jniEnv, jo
     return (cfg & 0xf);
 }
 
-JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1output(JNIEnv * jniEnv, jobject job, jint pin, jint p1){
-    unsigned int bank = GPIO_BANK(pin);
-    unsigned int num = GPIO_NUM(pin);
+JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1output(JNIEnv * jniEnv, jobject job, jint gpioPin, jint gpioStatus){
+    unsigned int bank = GPIO_BANK(gpioPin);
+    unsigned int num = GPIO_NUM(gpioPin);
 
     if (SUNXI_IO_BASE == 0)
         return -1;
 
     struct sunxi_gpio *pio = &((struct sunxi_gpio_reg *) SUNXI_IO_BASE)->gpio_bank[bank];
 
-    if (p1)
+    if (gpioStatus)
         *(&pio->dat) |= 1 << num;
     else
         *(&pio->dat) &= ~(1 << num);
@@ -117,11 +117,11 @@ JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1output(JNIEnv * jniEnv, jo
     return 0;
 }
 
-JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1pullup(JNIEnv * jniEnv, jobject job, jint pin, jint p1){
+JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1pullup(JNIEnv * jniEnv, jobject job, jint gpioPin, jint gpioPut){
     unsigned int cfg;
-    unsigned int bank = GPIO_BANK(pin);
-    unsigned int index = GPIO_PUL_INDEX(pin);
-    unsigned int offset = GPIO_PUL_OFFSET(pin);
+    unsigned int bank = GPIO_BANK(gpioPin);
+    unsigned int index = GPIO_PUL_INDEX(gpioPin);
+    unsigned int offset = GPIO_PUL_OFFSET(gpioPin);
 
     if (SUNXI_IO_BASE == 0)
         return -1;
@@ -131,7 +131,7 @@ JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1pullup(JNIEnv * jniEnv, jo
 
     cfg = *(&pio->pull[0] + index);
     cfg &= ~(0x3 << offset);
-    cfg |= p1 << offset;
+    cfg |= gpioPut << offset;
 
     *(&pio->pull[0] + index) = cfg;
 
@@ -139,10 +139,10 @@ JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1pullup(JNIEnv * jniEnv, jo
 
 }
 
-JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1input(JNIEnv * jniEnv, jobject job, jint pin){
+JNIEXPORT jint JNICALL Java_GPIO_Sun8i_GPIOCtrl_gpio_1input(JNIEnv * jniEnv, jobject job, jint gpioPin){
     unsigned int dat;
-    unsigned int bank = GPIO_BANK(pin);
-    unsigned int num = GPIO_NUM(pin);
+    unsigned int bank = GPIO_BANK(gpioPin);
+    unsigned int num = GPIO_NUM(gpioPin);
 
     if (SUNXI_IO_BASE == 0)
         return -1;
