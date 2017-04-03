@@ -17,12 +17,15 @@ public class GPIOCtrl {
             byte[] b =new byte[fin.available()];
             fin.read(b);
             fin.close();
-            File libdir = new File(saveDir);
-            if(!libdir.exists()) libdir.mkdirs();
-            FileOutputStream fos = new FileOutputStream(libPath);
-            fos.write(b);
-            fos.flush();
-            fos.flush();
+            File lib = new File(libPath);
+            if(!lib.exists()){
+                File libdir = new File(saveDir);
+                if(!libdir.exists()) libdir.mkdirs();
+                FileOutputStream fos = new FileOutputStream(libPath);
+                fos.write(b);
+                fos.flush();
+                fos.flush();
+            }
             System.load(libPath);
 
             //init gpio
