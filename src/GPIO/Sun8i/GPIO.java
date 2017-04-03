@@ -8,4 +8,6 @@ public class GPIO {
     public static final int ModelOutput = 1;
     public static final int StatusHIGH = 1;
     public static final int StatusLOW = 0;
+    public static final int PutUP = 1;
+    public static final int PutDOWN = 0;
 }

@@ -38,16 +38,49 @@ public class GPIOCtrl {
 
 
     //native interfaces
+
+    /**
+     * init gpio
+     * @return scuess 0 or not -1
+     */
     public static native int  gpio_init();
 
-    public static native int gpio_setcfg(int pin,int p1);
+    /**
+     * config gpio model
+     * @param gpioPin IO
+     * @param gpioModel Input 0 or Output 1
+     * @return scuess 0 or not -1
+     */
+    public static native int gpio_setcfg(int gpioPin,int gpioModel);
 
-    public static native int gpio_getcfg(int pin);
+    /**
+     * get gpio config
+     * @param gpioPin gpioPin
+     * @return Input 0 or Output 1
+     */
+    public static native int gpio_getcfg(int gpioPin);
 
-    public static native int gpio_output(int pin,int p1);
+    /**
+     *
+     * @param gpioPin gpioPin
+     * @param gpioStatus gpioStatus Low 0 or High 1
+     * @return scuess 0 or not -1
+     */
+    public static native int gpio_output(int gpioPin,int gpioStatus);
 
-    public static native int gpio_pullup(int pin,int p1);
+    /**
+     * raise or down GpioPin
+     * @param gpioPin gpioPin
+     * @param gpioPut PutUP PutDOWN
+     * @return scuess 0 or not -1
+     */
+    public static native int gpio_pullup(int gpioPin,int gpioPut);
 
-    public static native int gpio_input(int pin);
+    /**
+     * read gpio status
+     * @param gpioPin gpioPin
+     * @return gpio status down 0  or up 1
+     */
+    public static native int gpio_input(int gpioPin);
 
 }
